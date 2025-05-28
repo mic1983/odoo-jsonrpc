@@ -13,7 +13,7 @@ class Client
     private \GuzzleHttp\Client $client;
     private ?ResponseInterface $lastResponse = null;
 
-    public function __construct(string $baseUri, private string $service = 'object')
+    public function __construct(string $baseUri, private string $service = 'object', $sslVerify = true)
     {
 
         $this->client = new \GuzzleHttp\Client([
@@ -21,6 +21,7 @@ class Client
                 'Content-Type' => 'application/json',
             ],
             'base_uri' => $baseUri,
+            'verify' => $sslVerify,
         ]);
 
     }
@@ -69,6 +70,6 @@ class Client
             }
             throw new OdooException($response, $message, $json->error->code ?? null);
         }
-        return $json->result;
+        return $json->result ?? $json->id;
     }
 }
